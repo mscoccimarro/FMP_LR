@@ -5,7 +5,6 @@
 using namespace std;
 
 XM_SDL::XM_SDL() {
-
 /*
   enum InitFlags {
     SDL_INIT_TIMER,	     // timer subsystem.
@@ -19,15 +18,34 @@ XM_SDL::XM_SDL() {
     SDL_INIT_NOPARACHUTE     // compatibility. This flag is ignored.
   };
 */
+  // Initialize SDL
   if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
     cout << endl << "Unable to initialize SDL: " << SDL_GetError() << endl;
     exit(1);
   }
 
   this->window = NULL;
+  this->windowBG = NULL;
+}
+
+XM_SDL::~XM_SDL() {
+  // Deallocate surfaces
+  for(vector<SDL_Surface*>::iterator it = this->loadedMedia.begin(); 
+      it != this->loadedMedia.end();
+      ++it) {
+    SDL_FreeSurface( *it );
+  }
+
+  // Destroy window
+  if( this->window != NULL )
+    SDL_DestroyWindow( this->window );
+
+  // Quit SDL subsystems
+  SDL_Quit();
 }
 
 bool XM_SDL::createWindow( const char* TITLE, const int WIDTH, const int HEIGHT ) {
+  // Create window
   this->window = SDL_CreateWindow( TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
 				   WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
   if( this->window == NULL ) {
@@ -38,6 +56,44 @@ bool XM_SDL::createWindow( const char* TITLE, const int WIDTH, const int HEIGHT 
   return true;
 }
 
-void XM_SDL::displayWindow() {
+SDL_Surface* XM_SDL::getWindowSurface() {
+  // Get window surface
+  return SDL_GetWindowSurface( this->window );
+}
 
+void XM_SDL::updateWindowSurface() {
+  // Update the surface
+  SDL_UpdateWindowSurface( this->window );
+  SDL_Delay( 2000 );
+}
+
+void XM_SDL::setWindowBG( const uint8_t RED, const uint8_t GREEN, const uint8_t BLUE ) {
+  this->windowBG = this->getWindowSurface();
+  
+  // Fill BG surface with RGB
+  SDL_FillRect( this->windowBG, NULL, SDL_MapRGB( this->windowBG->format, RED, GREEN, BLUE ) );
+
+  this->updateWindowSurface();
+}
+
+SDL_Surface* XM_SDL::loadImage( const char* IMAGE_PATH ) {
+  SDL_Surface* image = NULL;
+  image = SDL_LoadBMP( IMAGE_PATH );
+
+  if( image == NULL ) {
+    cout << "Unable to load image: " << SDL_GetError() << endl;
+  } else {
+    this->loadedMedia.push_back( image );
+  }
+
+  return image;
+}
+
+void XM_SDL::setWindowBG( const char* IMAGE_PATH ) {
+  SDL_Surface* image = this->loadImage( IMAGE_PATH );
+  
+  if( image != NULL ) {
+    SDL_BlitSurface( image, NULL, this->getWindowSurface(), NULL ); 
+    this->updateWindowSurface();
+  }
 }

@@ -8,9 +8,10 @@ int main() {
 
   XM_SDL* sdlHandler = new XM_SDL();
 
-  sdlHandler->createWindow( WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT ); 
-
-  sdlHandler->displayWindow();
+  if( sdlHandler->createWindow( WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT ) ) {
+    sdlHandler->setWindowBG( 0, 0, 0 );
+    sdlHandler->setWindowBG( "images/background.bmp" );
+  }
 
   delete sdlHandler;
 
