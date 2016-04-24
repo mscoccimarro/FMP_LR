@@ -18,5 +18,6 @@ class XM_SDL {
     bool createWindow( const char* TITLE, const int WIDTH = 640, const int HEIGHT = 480 );
     void setWindowBG( const uint8_t RED, const uint8_t GREEN, const uint8_t BLUE );
     void setWindowBG( const char* IMAGE_PATH );
+    SDL_Event nextEvent();
 };
 #endif

@@ -11,6 +11,12 @@ int main() {
   if( sdlHandler->createWindow( WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT ) ) {
     sdlHandler->setWindowBG( 0, 0, 0 );
     sdlHandler->setWindowBG( "images/background.bmp" );
+
+    while( true ) {
+      if( sdlHandler->nextEvent().type == SDL_QUIT ) {
+	break;		
+      }
+    }
   }
 
   delete sdlHandler;

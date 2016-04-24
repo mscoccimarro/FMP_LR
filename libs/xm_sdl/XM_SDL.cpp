@@ -64,7 +64,6 @@ SDL_Surface* XM_SDL::getWindowSurface() {
 void XM_SDL::updateWindowSurface() {
   // Update the surface
   SDL_UpdateWindowSurface( this->window );
-  SDL_Delay( 2000 );
 }
 
 void XM_SDL::setWindowBG( const uint8_t RED, const uint8_t GREEN, const uint8_t BLUE ) {
@@ -96,4 +95,12 @@ void XM_SDL::setWindowBG( const char* IMAGE_PATH ) {
     SDL_BlitSurface( image, NULL, this->getWindowSurface(), NULL ); 
     this->updateWindowSurface();
   }
+}
+
+SDL_Event XM_SDL::nextEvent() {
+  SDL_Event e;
+  // Get next event in queue
+  SDL_PollEvent( &e );
+
+  return e;
 }
