@@ -6,7 +6,7 @@ int main() {
   const int WINDOW_HEIGHT = 480;
   const char* WINDOW_TITLE = "Full Metal Panic! Last Raid";
 
-  XM_SDL* sdlHandler = new XM_SDL();
+  XM_SDL* sdlHandler = new XM_SDL( SDL_INIT_VIDEO );
 
   if( sdlHandler->createWindow( WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT ) ) {
     sdlHandler->setWindowBG( 0, 0, 0 );

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-XM_SDL::XM_SDL() {
+XM_SDL::XM_SDL( uint32_t flags ) {
 /*
   enum InitFlags {
     SDL_INIT_TIMER,	     // timer subsystem.
@@ -19,7 +19,7 @@ XM_SDL::XM_SDL() {
   };
 */
   // Initialize SDL
-  if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+  if( SDL_Init( flags ) != 0 ) {
     cout << endl << "Unable to initialize SDL: " << SDL_GetError() << endl;
     exit(1);
   }
@@ -75,6 +75,22 @@ void XM_SDL::setWindowBG( const uint8_t RED, const uint8_t GREEN, const uint8_t 
   this->updateWindowSurface();
 }
 
+bool XM_SDL::optimizeSurface( SDL_Surface*& surface ) {
+  SDL_Surface* oldSurface = surface;
+  surface = NULL;
+
+  surface = SDL_ConvertSurface( oldSurface, this->getWindowSurface()->format, 0 );
+  if( surface == NULL ) {
+    surface = oldSurface;   
+    return false;
+  }
+  
+  // Get rid of old loaded surface
+  SDL_FreeSurface( oldSurface );
+
+  return true;
+}
+
 SDL_Surface* XM_SDL::loadImage( const char* IMAGE_PATH ) {
   SDL_Surface* image = NULL;
   image = SDL_LoadBMP( IMAGE_PATH );
@@ -82,6 +98,9 @@ SDL_Surface* XM_SDL::loadImage( const char* IMAGE_PATH ) {
   if( image == NULL ) {
     cout << "Unable to load image: " << SDL_GetError() << endl;
   } else {
+    // Try to optimize image
+    if( !( this->optimizeSurface( image ) ) )
+      cout << "Couldn't optimize image: " << IMAGE_PATH << endl;
     this->loadedMedia.push_back( image );
   }
 

@@ -11,9 +11,10 @@ class XM_SDL {
     SDL_Surface* getWindowSurface();
     void updateWindowSurface();
     SDL_Surface* loadImage( const char* IMAGE_PATH );
+    bool optimizeSurface( SDL_Surface*& surface );
 
   public:
-    XM_SDL();
+    XM_SDL( uint32_t flags );
     ~XM_SDL();
     bool createWindow( const char* TITLE, const int WIDTH = 640, const int HEIGHT = 480 );
     void setWindowBG( const uint8_t RED, const uint8_t GREEN, const uint8_t BLUE );
